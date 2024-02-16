@@ -1,5 +1,7 @@
 const fs = require("fs");
 // Your Mapbox access token
+const accessToken =
+  "pk.eyJ1IjoidGVycnlicm82NiIsImEiOiJjbGo0NmVodGgwYmExM2ttamVzbXIyZnFlIn0.bAeydSshebPxX_aIH9OseQ";
 
 // Prepare your GeoJSON data
 const geojsonData = {
