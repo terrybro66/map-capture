@@ -1,32 +1,27 @@
-import express from "express";
-import path from "path";
-import { imageGenerator } from "./src/imageGenerator.js";
+import { imageGenerator } from "./imageGenerator.js";
+import { v2 as cloudinary } from "cloudinary";
 
-const app = express();
-const port = process.env.PORT || 5000;
+cloudinary.config({
+  //secret stuff here
+});
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, "build")));
-
-// Serve images
-app.use("/images", express.static(path.join(__dirname, "images")));
-
-// Generate images
-app.get("/generate-images", async (req, res) => {
+async function uploadImages() {
   try {
-    await imageGenerator();
-    res.send({ status: "Images generated successfully" });
+    // Generate images
+    const images = await imageGenerator();
+
+    // Upload images to Cloudinary
+    for (const image of images) {
+      cloudinary.v2.uploader.upload(image, function (error, result) {
+        if (error) console.error("Upload error:", error);
+        else console.log("Upload result:", result);
+      });
+    }
+
+    console.log("Images generated and uploaded successfully");
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).send({ error: "Failed to generate images" });
   }
-});
+}
 
-// Handles any requests that don't match the ones above
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-});
+uploadImages();

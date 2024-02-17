@@ -48,4 +48,4 @@ async function imageGenerator() {
   });
 }
 
-imageGenerator().catch(console.error);
+export { imageGenerator };
